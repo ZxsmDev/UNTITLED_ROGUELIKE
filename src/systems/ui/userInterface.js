@@ -1,4 +1,5 @@
 import HUD from "./hud.js";
+import BoonUI from "./boonUI.js";
 
 export default class UserInterface {
   constructor(gameManager) {

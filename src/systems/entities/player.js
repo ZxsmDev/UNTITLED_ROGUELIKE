@@ -1,4 +1,5 @@
 import Entity from "./entity.js";
+import BoonUI from "../ui/boonUI.js";
 
 export default class Player extends Entity {
   constructor(gameManager, x, y, width, height) {
@@ -65,7 +66,7 @@ export default class Player extends Entity {
           this.x - 10,
           this.y - this.height * this.combat.melee.attackDistance - 20,
           this.width + 20,
-          this.height * this.combat.melee.attackDistance,
+          this.height * this.combat.melee.attackDistance
         );
       } else if (this.combat.melee.dirY === 1) {
         // Downward attack
@@ -73,7 +74,7 @@ export default class Player extends Entity {
           this.x - 10,
           this.y + this.height + 20,
           this.width + 20,
-          this.height * this.combat.melee.attackDistance,
+          this.height * this.combat.melee.attackDistance
         );
       } else {
         // HORIZONTAL ATTACKS
@@ -83,7 +84,7 @@ export default class Player extends Entity {
             : this.x - this.width * 2 * this.combat.melee.attackDistance - 20,
           this.y - 10,
           this.height * this.combat.melee.attackDistance,
-          this.width + this.height / 2 + 20,
+          this.width + this.height / 2 + 20
         );
       }
     }
@@ -218,6 +219,10 @@ export default class Player extends Entity {
     //==========================================
     if (this.game.input.isPressed(["Backslash", "Backquote"])) {
       this.game.debug.toggle();
+    }
+
+    if (this.game.input.isPressed(["B"])) {
+      this.debugActivateBoon();
     }
   }
   moveAndCollide() {
@@ -356,7 +361,7 @@ export default class Player extends Entity {
     this.combat.attacking = true;
     setTimeout(
       () => (this.combat.attacking = false),
-      this.combat.melee.attackSpeed,
+      this.combat.melee.attackSpeed
     ); // Attack duration
   }
   rangedAttack(e) {
@@ -369,7 +374,12 @@ export default class Player extends Entity {
     this.combat.attacking = true;
     setTimeout(
       () => (this.combat.attacking = false),
-      this.combat.ranged.attackSpeed,
+      this.combat.ranged.attackSpeed
     );
+  }
+  // TEMP DEVTOOL
+  debugActivateBoon() {
+    let bui = new BoonUI();
+    bui.render();
   }
 }
