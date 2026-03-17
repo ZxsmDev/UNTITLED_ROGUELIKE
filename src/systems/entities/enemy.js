@@ -10,12 +10,44 @@ export default class Enemy extends Entity {
     this.reachedTarget = false;
     this.seenPlayer = false;
     this.stoppingDistance = 50;
+
+    this.combat = {
+      health: 100,
+      maxHealth: 100,
+      dead: false,
+    };
   }
   render() {
-    this.game.ctx.fillStyle = "red";
-    this.game.ctx.fillRect(this.x, this.y, this.width, this.height);
+    const ctx = this.game.ctx;
+
+    if (this.combat.dead) {
+      setTimeout(() => {
+        ctx.clearRect(this.x, this.y, this.width, this.height);
+      }, 500);
+    }
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    const healthRatio = this.combat.health / this.combat.maxHealth;
+
+    ctx.fillStyle = "#d65d5d";
+    ctx.fillRect(
+      this.x - this.width,
+      this.y - this.height / 2,
+      this.width * 3,
+      10,
+    );
+    ctx.fillStyle = "#b9ffac";
+    ctx.fillRect(
+      this.x - this.width,
+      this.y - this.height / 2,
+      !this.combat.dead ? this.width * 3 * healthRatio : 0,
+      10,
+    );
   }
   update() {
+    if (this.dead) return;
     if (this.reachedTarget || (!this.seenPlayer && !this.castToTarget())) {
       // If the target is reached or blocked, generate a new target
       this.facing = Math.random() < 0.5 ? 1 : -1;
@@ -26,8 +58,11 @@ export default class Enemy extends Entity {
     this.radialSight();
     this.reachedTarget = Math.abs(this.target - this.x) < 5;
     this.vx = this.facing * this.speed;
-    
-    if (Math.abs(this.target - this.x) < this.stoppingDistance) {
+
+    if (
+      this.seenPlayer &&
+      Math.abs(this.target - this.x) <= this.stoppingDistance
+    ) {
       this.vx = 0; // Stop moving when within stopping distance
     }
 
@@ -40,8 +75,6 @@ export default class Enemy extends Entity {
       this.seenPlayer = true; // Enemy sees the player
       this.target = player.x + player.width / 2; // Update target to follow the player
       this.facing = this.target > this.x ? 1 : -1; // Update facing direction
-
-      
     } else {
       this.seenPlayer = false; // Enemy loses sight of the player
     }

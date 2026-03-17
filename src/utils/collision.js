@@ -56,7 +56,7 @@ export const Collision = {
             x: refTarget.x + refTarget.width / 2,
             y: refTarget.y + refTarget.height / 2,
             r: radius,
-          }
+          },
         );
       default:
         return false;

@@ -21,13 +21,13 @@ export default class Debug {
       "FPS: " +
         Math.round(1000 / (performance.now() - this.lastFrameTime || 16)),
       15,
-      30
+      30,
     );
     ctx.fillText("Game State: " + this.game.stateManager.current.name, 15, 50);
     ctx.fillText(
       "Canvas Size: " + this.game.width + " x " + this.game.height,
       15,
-      70
+      70,
     );
     ctx.fillText("Center X: " + this.game.centerX.toFixed(2), 15, 90);
     ctx.fillText("Center Y: " + this.game.centerY.toFixed(2), 15, 110);
@@ -48,7 +48,7 @@ export default class Debug {
     ctx.fillText(
       "Geometry Objects: " + this.game.level.geometry.length,
       15,
-      410
+      410,
     );
     ctx.fillText(
       "Size: " +
@@ -56,7 +56,7 @@ export default class Debug {
         " x " +
         this.game.level.data.size.height,
       15,
-      430
+      430,
     );
 
     this.lastFrameTime = performance.now();
@@ -71,14 +71,14 @@ export default class Debug {
       player.dash.startY + player.dash.dirY * player.dash.distance;
 
     // ==============================
-    // Velocity Vector (current)
+    // VELOCITY VECTOR (current)
     // ==============================
     ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
     ctx.beginPath();
     ctx.moveTo(player.x + player.width / 2, player.y + player.height / 2);
     ctx.lineTo(
       player.x + player.width / 2 + player.vx * 0.1,
-      player.y + player.height / 2 + player.vy * 0.1
+      player.y + player.height / 2 + player.vy * 0.1,
     );
     ctx.stroke();
 
@@ -97,48 +97,44 @@ export default class Debug {
     }
 
     // ==============================
-    // ATTACK BOX (static endpoint)
+    // ATTACK BOX
     // ==============================
-    if (this.combat.attacking) {
-      this.game.ctx.fillStyle = "rgba(200, 100, 255, 0.5)";
+    if (player.combat.attacking && player.combat.currentType == "melee") {
+      ctx.fillStyle = "rgba(255, 100, 100, 0.3)";
 
       // HORIZONTAL ATTACKS
-      this.game.ctx.fillRect(
-        this.combat.melee.dir == 1
-          ? this.x + 20 + this.width
-          : this.x - this.width * 2 * this.combat.melee.attackDistance - 20,
-        this.y - 10,
-        this.height * this.combat.melee.attackDistance,
-        this.width + this.height / 2 + 20
+      ctx.fillRect(
+        player.combat.melee.dir == 1
+          ? player.x + 20 + player.width
+          : player.x -
+              player.width * 2 * player.combat.melee.attackDistance -
+              20,
+        player.y - 10,
+        player.height * player.combat.melee.attackDistance,
+        player.width + player.height / 2 + 20,
       );
     }
   }
   drawDebugEnemies() {
     const ctx = this.game.ctx;
 
-    this.game.entityManager.entities.forEach((enemy) => {
+    this.game.entityManager.characterEntities.forEach((enemy) => {
       // Player is last index in entities, don't draw debug
-      if (
-        enemy ==
-        this.game.entityManager.entities[
-          this.game.entityManager.entities.length - 1
-        ]
-      )
-        return;
+      if (enemy == this.game.player) return;
       // ==============================
-      // Velocity Vector (current)
+      // VELOCITY VECTOR (current)
       // ==============================
       ctx.strokeStyle = "rgba(0, 255, 0, 0.7)";
       ctx.beginPath();
       ctx.moveTo(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
       ctx.lineTo(
         enemy.x + enemy.width / 2 + enemy.vx * 0.1,
-        enemy.y + enemy.height / 2 + enemy.vy * 0.1
+        enemy.y + enemy.height / 2 + enemy.vy * 0.1,
       );
       ctx.stroke();
 
       // ==============================
-      // Target Position
+      // TARGET POSITION
       // ==============================
       ctx.fillStyle = "rgba(255, 230, 0, 0.5)";
       ctx.beginPath();
@@ -146,7 +142,7 @@ export default class Debug {
       ctx.fill();
 
       // ==============================
-      // Radial Sight
+      // RADIAL SIGHT
       // ==============================
       ctx.fillStyle = "rgba(0, 162, 255, 0.1)";
       ctx.beginPath();
@@ -155,28 +151,28 @@ export default class Debug {
         enemy.y + enemy.height / 2,
         400,
         0,
-        2 * Math.PI
+        2 * Math.PI,
       );
       ctx.fill();
 
       // ==============================
-      // Debug Text
+      // DEBUG TEXT
       // ==============================
       const text = enemy.seenPlayer ? "Moving to Attack" : "Patrolling";
 
       ctx.fillStyle = "rgba(0,0,0,0.6)";
       ctx.fillRect(
         enemy.x - (ctx.measureText(text).width + 20) / 2 + enemy.width / 2,
-        enemy.y - 30,
+        enemy.y - 60,
         ctx.measureText(text).width + 20,
-        24
+        24,
       );
       ctx.fillStyle = "white";
       ctx.font = "16px Arial";
       ctx.fillText(
         text,
         enemy.x - (ctx.measureText(text).width + 20) / 2 + enemy.width / 2 + 10,
-        enemy.y - 12.5
+        enemy.y - 42.5,
       );
     });
   }

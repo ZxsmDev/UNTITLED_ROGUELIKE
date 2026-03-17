@@ -32,16 +32,24 @@ section.overlay {
   justify-content: center;
   align-items: center;
 }
-button, select, input {
+button,
+select,
+input {
   padding: 10px 20px;
   margin: 10px;
   font-size: 16px;
   cursor: pointer;
-  background-color: #333;
-  border: none;
+  background-color: #191919;
+  border: 0.5px solid rgb(133, 133, 133);
   border-radius: 5px;
   color: white;
+  transition: all 0.3s ease;
 }
 button:hover {
-  background-color: #555;
+  background-color: #333;
+  border: 0.5px solid blueviolet;
+}
+img {
+  max-width: 300px;
+  border-radius: 50%;
 }

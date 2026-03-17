@@ -1,4 +1,5 @@
 import Entity from "./entity.js";
+import Bullet from "./bullet.js";
 import BoonUI from "../ui/boonUI.js";
 
 export default class Player extends Entity {
@@ -37,21 +38,26 @@ export default class Player extends Entity {
 
     // Combat
     this.combat = {
-      currentType: null,
-      ranged: { attackSpeed: 100, attackDistance: 15 },
-      melee: { attackSpeed: 300, attackDistance: 1.7, dir: 1 },
+      currentType: "ranged",
+      ranged: { damage: 10, attackSpeed: 100, attackDistance: 15 },
+      melee: { damage: 15, attackSpeed: 250, attackDistance: 1.7, dir: 1 },
       modifiers: {
         damage: 0,
         defense: 0,
         health: 0,
       },
-      health: 100,
+      health: 200,
+      maxHealth: 200,
       defense: 5,
       attacking: false,
+      dead: false,
     };
 
     // Flags
     this.grounded = false;
+
+    // On init
+    this.initCombatControls();
   }
   render() {
     this.game.ctx.fillStyle = "skyblue";
@@ -59,9 +65,8 @@ export default class Player extends Entity {
   }
   update() {
     // Update facing based on the last horizontal key pressed
-    if (this.game.input.isPressed(["ArrowLeft", "KeyA"])) this.facingX = -1;
-    else if (this.game.input.isPressed(["ArrowRight", "KeyD"]))
-      this.facingX = 1;
+    if (this.game.input.isDown(["ArrowLeft", "KeyA"])) this.facingX = -1;
+    else if (this.game.input.isDown(["ArrowRight", "KeyD"])) this.facingX = 1;
     //==========================================
     // Dashing - Initiate
     //==========================================
@@ -189,9 +194,109 @@ export default class Player extends Entity {
       this.game.debug.toggle();
     }
 
-    if (this.game.input.isPressed(["B"])) {
+    if (this.game.input.isPressed(["KeyQ"])) {
+      this.damage(10);
+    }
+
+    if (this.game.input.isPressed(["KeyT"])) {
+      this.combat.currentType =
+        this.combat.currentType == "ranged" ? "melee" : "ranged";
+    }
+
+    if (this.game.input.isPressed(["KeyB"])) {
       this.debugActivateBoon();
     }
+  }
+  initCombatControls() {
+    document.addEventListener("mousedown", (e) => {
+      if (this.combat.currentType === "ranged") {
+        this.rangedAttack(e);
+      } else if (this.combat.currentType === "melee") {
+        this.meleeAttack();
+      }
+    });
+  }
+  meleeAttack() {
+    if (this.combat.attacking) return; // Prevent spamming attacks
+
+    if (this.game.input.isDown(["ArrowLeft", "KeyA"])) {
+      this.combat.melee.dir = -1;
+    } else if (this.game.input.isDown(["ArrowRight", "KeyD"])) {
+      this.combat.melee.dir = 1;
+    } else {
+      // Default to facing direction if no input
+      this.combat.melee.dir = this.facingX || 1; // Use last horizontal input as facing
+    }
+
+    this.game.entityManager.characterEntities.forEach((enemy) => {
+      if (enemy == this) return;
+
+      if (
+        this.game.collision.checkCollision(
+          {
+            x:
+              this.combat.melee.dir == 1
+                ? this.x + 20 + this.width
+                : this.x -
+                  this.width * 2 * this.combat.melee.attackDistance -
+                  20,
+            y: this.y - 10,
+            width: this.height * this.combat.melee.attackDistance,
+            height: this.width + this.height / 2 + 20,
+          },
+          enemy,
+        )
+      ) {
+        enemy.damage(this.combat.melee.damage);
+      }
+    });
+
+    this.combat.attacking = true;
+    setTimeout(
+      () => (this.combat.attacking = false),
+      this.combat.melee.attackSpeed,
+    );
+  }
+  rangedAttack(e) {
+    if (this.combat.attacking) return;
+
+    const rect = this.game.canvas.getBoundingClientRect();
+
+    const scaleX = this.game.canvas.width / rect.width;
+    const scaleY = this.game.canvas.height / rect.height;
+
+    const mouseX = (e.clientX - rect.left) * scaleX + this.game.camera.x;
+    const mouseY = (e.clientY - rect.top) * scaleY + this.game.camera.y;
+
+    const px = this.x + this.width / 2;
+    const py = this.y + this.height / 2;
+
+    const dx = mouseX - px;
+    const dy = mouseY - py;
+
+    const length = Math.hypot(dx, dy) || 1;
+
+    const dirX = dx / length;
+    const dirY = dy / length;
+
+    const bullet = new Bullet(
+      this.game,
+      px + dirX * 20,
+      py + dirY * 20,
+      10,
+      10,
+    );
+
+    bullet.vx = dirX * 1200;
+    bullet.vy = dirY * 1200;
+
+    this.game.entityManager.addEntity(bullet);
+
+    this.combat.attacking = true;
+    setTimeout(
+      () => (this.combat.attacking = false),
+      this.combat.ranged.attackSpeed,
+    );
   }
   moveAndCollide() {
     const collision = this.game.collision;
@@ -304,46 +409,6 @@ export default class Player extends Entity {
         this.grounded = false;
       }
     }
-  }
-  meleeAttack() {
-    if (this.combat.attacking) return; // Prevent spamming attacks
-
-    if (this.game.input.isDown(["ArrowUp", "KeyW"])) {
-      this.combat.melee.dirY = -1;
-      this.combat.melee.dirX = 0;
-    } else if (this.game.input.isDown(["ArrowDown", "KeyS"])) {
-      this.combat.melee.dirY = 1;
-      this.combat.melee.dirX = 0;
-    } else if (this.game.input.isDown(["ArrowLeft", "KeyA"])) {
-      this.combat.melee.dirX = -1;
-      this.combat.melee.dirY = 0;
-    } else if (this.game.input.isDown(["ArrowRight", "KeyD"])) {
-      this.combat.melee.dirX = 1;
-      this.combat.melee.dirY = 0;
-    } else {
-      // Default to facing direction if no input
-      this.combat.melee.dirX = this.facingX || 1; // Use last horizontal input as facing
-      this.combat.melee.dirY = 0;
-    }
-
-    this.combat.attacking = true;
-    setTimeout(
-      () => (this.combat.attacking = false),
-      this.combat.melee.attackSpeed
-    ); // Attack duration
-  }
-  rangedAttack(e) {
-    if (this.combat.attacking) return;
-
-    // Get mouse click position
-    let mouseX = e.clientX;
-    let mouseY = e.clientY;
-
-    this.combat.attacking = true;
-    setTimeout(
-      () => (this.combat.attacking = false),
-      this.combat.ranged.attackSpeed
-    );
   }
   // TEMP DEVTOOL
   debugActivateBoon() {

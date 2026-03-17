@@ -1,11 +1,7 @@
 ## Todo:
-  - other states then game
-  - adjust ramp collision trajectory
-  - allow smooth descent down ramp
-  - ramp gap collision detection
-  - convert level size to units to make procedural rooms easy
-  - improved use of HUD
-  - hazard implementation into collision (player hurtbox)
+  - pause state
+  - adjust ramp collision
+  - convert level size to units to make procedural rooms
 
 ## MOST IMPORTANT:
 ### Proper GAMELOOP
@@ -28,3 +24,6 @@
   - boss
   - upgrade shop
   - boon system
+
+## BUGS: 
+- High amount of bullets throttles performance and player input/movement

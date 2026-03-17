@@ -10,7 +10,6 @@ export default class GameManager {
     stateManager, // State manager system, handles game states and transitions, calls update/render on current state
     entityManager, // Entity manager system, handles all entities and their updates/renders
     PlayerClass, // Player class, represents the player entity, global reference for player-specific logic
-    CombatManager, // Combat manager system, handles combat logic, damage calculations, and combat interactions
     LevelClass, // Level class, represents the current level, holds level data and geometry, handles level-specific logic
     Interaction, // Interaction system, handles player interactions with the environment and entities
     Camera, // Camera system, handles view transformations, follows player, and manages rendering offsets
@@ -35,9 +34,6 @@ export default class GameManager {
     this.PlayerClass = PlayerClass;
     this.player = null;
     this.entityManager = new entityManager(this);
-
-    // Combat
-    this.combatManager = new CombatManager(this);
 
     // Camera
     this.camera = new Camera(this);
@@ -85,7 +81,7 @@ export default class GameManager {
       50, // Default height
     );
 
-    this.entityManager.entities.push(this.player);
+    this.entityManager.addCharacterEntity(this.player);
 
     this.camera.setTarget(this.player);
 

@@ -1,42 +1,28 @@
 export default class HUD {
   constructor(gameManager) {
     this.game = gameManager;
-    this.font = "16px Arial";
+    this.font = "20px Arial";
     this.color = "white";
   }
   render(ctx) {
     ctx.save();
     ctx.font = this.font;
     ctx.fillStyle = this.color;
-    ctx.fillText(
-      `Health: ${this.game.player.combat.health}`,
-      15,
-      this.game.height - 160
-    );
-    ctx.fillText(
-      `Damage: ${this.game.player.combat.damage}`,
-      15,
-      this.game.height - 140
-    );
-    ctx.fillText(
-      `Attack Speed: ${this.game.player.combat.attackSpeed}`,
-      15,
-      this.game.height - 120
-    );
-    ctx.fillText(
-      `Defense: ${this.game.player.combat.defense}`,
-      15,
-      this.game.height - 100
-    );
 
-    Object.keys(this.game.player.combat.modifiers).forEach((key, index) => {
-      const value = this.game.player.combat.modifiers[key];
-      ctx.fillText(
-        `Combat Modifier ${index + 1}: ${key} (${value})`,
-        15,
-        this.game.height - (index + 1) * 20
-      );
-    });
+    ctx.fillText("Health: ", 10, this.game.height - 40);
+
+    const player = this.game.player;
+    const healthRatio = player.combat.health / player.combat.maxHealth;
+
+    ctx.fillStyle = "#d65d5d";
+    ctx.fillRect(10, this.game.height - 30, this.game.width / 4, 20);
+    ctx.fillStyle = "#b9ffac";
+    ctx.fillRect(
+      10,
+      this.game.height - 30,
+      !player.combat.dead ? (this.game.width / 4) * healthRatio : 0,
+      20,
+    );
 
     ctx.restore();
   }

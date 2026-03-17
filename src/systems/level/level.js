@@ -49,7 +49,6 @@ export default class Level {
     this.game.interaction.interactables.forEach((interactable) => {
       interactable.interactable.update();
     });
-    this.game.entityManager.update();
   }
   load(index) {
     this.data = this.levels[index];
@@ -74,7 +73,7 @@ export default class Level {
             obj.x,
             obj.y,
             obj.width,
-            (obj.height) / 2,
+            obj.height / 2,
             this.color.platform,
           );
           this.collision.rects.push(platformRect);
@@ -136,7 +135,7 @@ export default class Level {
         25, // Default width
         50, // Default height
       );
-      this.game.entityManager.addEnemy(enemy);
+      this.game.entityManager.addCharacterEntity(enemy);
     });
   }
 }

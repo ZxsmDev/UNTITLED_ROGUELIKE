@@ -1,6 +1,6 @@
-# GAME_NAME
+# SEVER
 
-> A fast-paced 2D action roguelike about enforcement, escalation, and the cost of efficient violence.
+> A fast-paced 2D action roguelike.
 
 ---
 
@@ -29,7 +29,7 @@
 
 ## OVERVIEW
 
-**GAME_NAME** is a room-based 2D action roguelike built in HTML Canvas and vanilla JavaScript.
+**SEVER** is a room-based 2D action roguelike built in HTML Canvas and vanilla JavaScript.
 
 Each run places you inside a procedurally assembled room. Your job is simple:
 
@@ -360,20 +360,3 @@ Optimized for portfolio visibility and code clarity.
 - [ ] Persistent save  
 - [ ] Starting loadout variants  
 
----
-
-## COMMIT HISTORY
-
-| #   | Commit                          | Description                                                                                            |
-| --- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1   | Refactoring Progress (P1)       | Core architecture rebuilt: MAIN → GAMEMANAGER → GAMELOOP → STATEMANAGER → ENTITYMANAGER → PLAYER       |
-| 2   | Refactoring Progress (P2)       | Bug fixes, sizing logic, refined movement, early level infrastructure                                  |
-| 3   | Refactoring Progress (P3)       | Debug trajectory, improved collision detection, camera system, level system, core player movement      |
-| 4   | Created New Preliminary Systems | Combat manager, interaction manager, ui + hud, better collision detection, ramp level object           |
-| 5   | Updated Level System            | Created a more in-depth level, adjusted some ramp physics, began constructing python level editor      |
-| 6   | Refined Object Instantiation    | Trimmed and refactored object instantiation, improved and simplified collision, interaction foundation |
-| 7   | Attack Implementation & Enemies | Allowed player attacking, added enemies and adjusted gameManager declaration, interactable door        |
-| 8   | Interaction & Improved Editor   | Added UI to the door interaction, cleaned up varius redundant code, massive editor upgrade (still WIP) |
-| 9   | Main Menu & Editor Change       | Converted editor into HTML/JS for ease of use, added main menu, began working on level swapping        |
-| 10  | Major Genre Change and "Rebrand"| Removed editor (bye 4 hours), removed any other bloat, layed groundwork for new roguelike system       |
-| 11  | Adjusted combat and interaction | Added ranged combat options (not done), changed interact ui to draw over following player position      |

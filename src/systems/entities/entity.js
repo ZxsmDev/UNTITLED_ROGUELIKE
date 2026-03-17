@@ -12,5 +12,25 @@ export default class Entity {
     this.x += this.vx * this.game.delta;
     this.y += this.vy * this.game.delta;
   }
+  damage(amount) {
+    if (this.combat.health - amount <= 0) {
+      this.combat.dead = true;
+      let currentEntityIndex =
+        this.game.entityManager.characterEntities.indexOf(this);
+      if (currentEntityIndex == this.game.player) {
+        console.log("Player is dead");
+        return;
+      }
+      console.log(`Enemy #${currentEntityIndex + 1} is dead`);
+
+      const index = currentEntityIndex;
+      if (index !== -1) {
+        this.game.entityManager.characterEntities.splice(index, 1);
+      }
+      return;
+    }
+
+    this.combat.health -= amount;
+  }
   render() {}
 }

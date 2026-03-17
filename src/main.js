@@ -7,9 +7,6 @@ import StateManager from "./game/stateManager.js";
 import EntityManager from "./systems/entities/entityManager.js";
 import Player from "./systems/entities/player.js";
 
-// Combat system
-import CombatManager from "./systems/combat/combatManager.js";
-
 // Camera
 import Camera from "./systems/camera/camera.js";
 
@@ -45,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
     StateManager,
     EntityManager,
     Player,
-    CombatManager,
     Level,
     Interaction,
     Camera,
